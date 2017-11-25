@@ -1,811 +1,556 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>广东省政府集中采购目录及采购限额标准-开放广东-广东省政府数据统一开放平台</title>
-    <meta name="keywords" content="大数据,广东"/>
-    <meta name="description" content="开放广东-广东省政府数据统一开放平台,大数据,广东" />
-    <!-- 初始化 -->
-    <link rel="stylesheet" href="/Public/Common/css/reset.css"/>
-    <script src="/Public/Common/js/jquery113.js"></script>
-    <!-- END -->
-
-    <!-- BootCss加载 -->
-    <link rel="stylesheet" href="/Public/Common/plus/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Public/Common/plus/bootstrap/css/bootstrap-theme.min.css">
-    <script src="/Public/Common/plus/bootstrap/js/bootstrap.min.js"></script>
-    <!-- END -->
-
-    <!--[if lte IE 6]>
-    <link rel="stylesheet" type="text/css" href="/Public/Common/plus/bootstrap/css/bootstrap-ie6.css">
-    <link rel="stylesheet" type="text/css" href="/Public/Common/plus/bootstrap/css/ie.css">
-    <![endif]-->
-
-    <!-- 字体加载 -->
-    <link rel="stylesheet" href="/Public/Home/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="/Public/Home/css/ionicons.min.css"/>
-
-    <!-- JS -->
-    <script src="/Public/Common/plus/layer/layer.js"></script>
-    <script src="/Public/Common/js/common.js"></script>
-    <!-- END -->
-
-    <link rel="stylesheet" href="/Public/Home/css/new.css"/>
-
-
-    <!--[if IE 6]>
-    <script src="/Public/Common/js/png.js" type="text/javascript"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>浙江省公共数据开放目录</title>
+    <link href="css/public.css" rel="stylesheet" type="text/css" />
+    <link href="css/wfdw.css" rel="stylesheet" type="text/css" />
+    <link href="css/wfdw3.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/UrlEncode.js"></script>
     <script type="text/javascript">
-        DD_belatedPNG.fix('div, ul, img, li, input , a');
-    </script>
-    <link rel="stylesheet" href="/Public/Home/css/ie6.css"/>
-    <![endif]-->
+        String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
+            if (!RegExp.prototype.isPrototypeOf(reallyDo)) {
+                return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi": "g")), replaceWith);
+            } else {
+                return this.replace(reallyDo, replaceWith);
+            }
+        }
+        function search(){
+            var key = document.getElementById("key").value;
+            if(keyIsnotNull(key)){
+                document.getElementById("mySearchForm").submit();
+            }
+        }
 
-    <!--[if IE 7]>
-    <link rel="stylesheet" href="/Public/Home/css/ie7.css"/>
-    <![endif]-->
+        function download(url){
+            $.ajax({
+                type: "post",
+                contentType: "application/json;charset=UTF-8",
+                url: "download.action?fileName="+encodeURI(encodeURI(url)),
+                success: function(data) {
+                }
+            });
+            window.open("file.down?fileRoot=uploads&fileName="+encodeURI(encodeURI(url)));
+        }
 
-    <!--[if IE 8]>
-    <link rel="stylesheet" href="/Public/Home/css/ie8.css"/>
-    <![endif]-->
+        function keySearch(resid, listNum, cateCode) {
+            var key = $("#keySearch").val();
+            var encode = $("#interface_encoding").val();
+            if(keyIsnotNull(key)){
 
-    <script>
-        if( Version == '6' || Version == '7' ){
-            window.location.href = '/index.php/index/tips.html'
+                if( $("#interface_type").val() == 2) {
+                    var href = $("#interface_links").val();
+                    var arg = "";
+
+                    if(encode=="gb2312"){
+                        arg = href.replaceAll("某某", encodeToGb2312(key));
+                    }else{
+                        arg = href.replaceAll("某某", key);
+                    }
+                    window.open(encodeURI(arg));
+                    return;
+                }
+
+                if($("#interface_type").val() == 3) {
+                    var href = $("#interface_links").val();
+                    var arg = "";
+                    if(encode=="gb2312"){
+                        arg = $("#interface_arg1namevalue").val().replace("?", encodeToGb2312(key))
+                    }else{
+                        arg = $("#interface_arg1namevalue").val().replace("?", key)
+                    }
+                    window.open(href + arg);
+                    return;
+                }
+
+                var args={resid:resid, searchKey:key , listNum: listNum, cateCode:cateCode};
+                $.ajax({
+                    type : "post",
+                    url  : "getAllData.action",
+                    data : args,
+                    async : true,
+                    success : function(data){
+                        var re = data.split("||");
+                        initDiv();
+                        if(cateCode!=""){
+                            $("#search_value").html(re[1]);
+                            if(re.length == 3 && re[2] != "") {
+                                $("#search_step").attr("class", "dzpage cy666");
+                                $("#search_step").html(re[2]);
+                            }
+                            $("#searchDetail").show();
+                        }else{
+                            var res = re[1].split("&&");
+                            if(res[1]=="1"){
+                                $("#showButton").show();
+                            }
+                            $("#search_value").html(res[0]);
+                            $("#searchDetail").show();
+
+                            $("#search_value2").html(res[2]);
+                            $("#searchDetail2").hide();
+                        }
+                    },
+                    error : function(){
+                        showWarning("没有找到！");
+                    }
+                });
+            } else {
+                alert("请输入查询的关键字");
+            }
+        }
+
+        function initDiv() {
+            $("#search_value").html("");
+            $("#search_step").attr("class", "");
+            $("#search_step").html("");
+        }
+
+        function keyIsnotNull(key) {
+            var describe = $("#interface_describe").val();
+            if(key != null && key != "" && key != describe) {
+                return true;
+            } else {
+                return false;
+            }
         }
     </script>
-
 </head>
 <body>
-<div class="wrapper">
-    <div class="content index-head">
-        <a href="/index.php/index/index.html" class="index-logo"></a>
-        <div class="index-search">
-            <div class="tips" style="float:left;">现已开放<div class="countdown">241</div>个政府数据集和应用；</div>
-            <div class="tips" style="float:left;">超过<div class="countdown">123289555</div>条政府数据</div>
-            <div class="clear"></div>
-            <form action="/index.php/search/index.html" method="post" id="search">
-                <div class="search">
-                    <input type="text" name="keyword" value="" placeholder="请输入关键字进行搜索"/>
-                    <a href="javascript:" class="search-btn" onclick="$('#search').submit()"></a>
+<div id="hiddenLocation" style="display:none;"><span id="ss_webid">1</span>
+    <span id="col1_name">数据开放</span>
+    <span id="col1_url">http://data.zjzwfw.gov.cn</span>
+</div>
+<!-- banner开始 -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td height="97" align="center"><script language='javascript' src='http://www.zjzwfw.gov.cn/script/banner/banner_No3.js'></script></td>
+    </tr>
+</table>
+<!-- banner结束 -->
+
+<!-- 导航开始 -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-bottom:2px solid #659cca;">
+    <tr>
+        <td align="center" height="36"></script><script language='javascript' src='http://www.zjzwfw.gov.cn/script/nav/nav_sj.js'></script>
+            <script language='javascript' src='http://www.zjzwfw.gov.cn/script/nav/setNav.js'></script>
+        </td>
+    </tr>
+</table>
+<!-- 导航结束 -->
+<div class="zbg">
+    <div class="top">
+        <div class="logo"><a href="/"><img src="images/ggsjsy_01_03.png" /></a></div>
+    </div>
+    <div class="top2">
+        <!--首排-->
+        <div class="sjtop">
+            <div class="biaot"><a href="/"><img src="images/sjly_04.png" align="middle" /></a></div>
+            <!--search-->
+            <form id="mySearchForm" action="/search.action" method="post">
+                <div class="mySearch">
+                    <ul>
+                        <li><a href="javascript:search();"><img src="images/ggsjsy_07.png" /></a></li>
+                        <li class="mySearchli">
+                            <input name="keyword" id="key" type="text" class="mySearchip cysh" value="请输入关键字"
+                                   onblur="if(this.value==''){this.value='请输入关键字'}" onfocus="if(this.value=='请输入关键字'){this.value=''}"/>
+                        </li>
+                        <li><a href="javascript:search();"><img src="images/ggsjsy_10.png" /></a></li>
+                    </ul>
                 </div>
             </form>
+            <!--search end-->
         </div>
-        <div class="login-register">
-            <a href="/index.php/user/login.html" class="login-btn"><img src="/Public/New/img/ures.png" />登录</a>
-            <a href="/index.php/user/register.html" class="register-btn">注册</a>        </div>
-    </div>
-</div>
-<style>
-    .countdown { display:inline-block;margin-bottom:-1px;overflow:hidden; }
-    .countdown .num { display:inline-block;float:left;height:15px;position:relative;top:0;left:0; }
-    .countdown .num span { display:block; }
-</style>
-<script>
-    $('.control-btn').mouseover(function(){
-        $(this).children().last().slideDown('fast');
-    }).mouseleave(function(){
-        $(this).children().last().slideUp('fast');
-    })
+        <!--首排end-->
+        <div class="wftop2">
+            <div class="wftop2lf">
+                <div class="wftop2lftop1">
+                    <div class="wftop2lftop1_1">
+                        <ul>
+                            <li class="cysh">当前位置：</li>
+                            <li class="cy3d3"><a href="/">首页</a></li>
+                            <li class="cysh">></li>
 
-    if( !OldIE() ) {
-        $.each($('.countdown'), function () {
-            $(this).css('display','inline-block')
-            var num = $(this).text();
-            $(this).html('');
-            var length = num.length;
-            for (var i = 0,p = length ; i < length; i++,p--) {
-                if( p % 3 == 0 && i >=1 ){
-                    $(this).append('<div class="num sep" data-num="0" style="position:relative;top:-2px;"><span>,</span></div>');
-                }
-                var $number = '<div class="num number" data-num="' + num[i] + '"><span>0</span> <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>';
-                $(this).append($number);
-            }
+                            <li class="cy3d3"><a href="toCate.action">数据领域</a></li>
+                            <li class="cysh">></li>
+                            <li class="cy3d3"><a href="toCate.action?catecode=SJLY001">经济建设</a></li>
 
-            $(function () {
-                $.each($('.countdown .num.number'), function () {
-                    var offset = parseFloat($(this).attr('data-num')) * 20;
-                    $(this).animate({
-                        top: '-' + offset + 'px'
-                    }, 500, 'swing');
-                })
-            })
 
-        })
-    }
-</script>
-<!--<div class="wrapper header">
-    <div class="content">
-        <div class="header-left">
-            <div class="logo">
-                <a href="/index.php/index/index.html"><img src="/Public/Home/images/logo.png" alt=""/></a>
-            </div>
-        </div>
-        <div class="search-control">
-            <form action="/index.php/search/index.html" method="post">
-            <div class="search-form">
-                <input type="text" class="search-input" name="keyword" placeholder="请输入数据/应用/移动应用名称关键词…"  value="" /><input type="submit" class="search-btn" value=" " />
-                <div class="clear"></div>
-            </div>
-            </form>
-            <ul class="hot-search">
-                                <li><a href="/index.php/search/index/keyword/%25E6%2595%25B0%25E6%258D%25AE.html">数据</a></li><li><a href="/index.php/search/index/keyword/%25E5%25B9%25BF%25E4%25B8%259C.html">广东</a></li><li><a href="/index.php/search/index/keyword/%25E9%25AB%2598%25E6%25A0%25A1.html">高校</a></li>            </ul>
-        </div>
-        <div class="clear"></div>
-    </div>
-</div>-->
-<div class="wrapper category">
 
-    <div class="content">
-
-        <div class="category-list">
-
-            <a href="javascript:;" class="category-list-menu all-category">
-                <span data-id="0" class="on">主题分类</span>
-                <span data-id="1">政府机构</span>
-            </a>
-
-            <div class="category-group topic-group hide" style="border-right:1px solid #ededed;">
-                <a href="javascript:" index="0" class="category-list-menu category-topic-item">
-                    <h3>• 资源环境<em class="ion-ios-arrow-forward"></em></h3>
-                </a><a href="javascript:" index="1" class="category-list-menu category-topic-item">
-                <h3>• 经济建设<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="2" class="category-list-menu category-topic-item">
-                <h3>• 教育科技<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="3" class="category-list-menu category-topic-item">
-                <h3>• 道路交通<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="4" class="category-list-menu category-topic-item">
-                <h3>• 社会发展<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="5" class="category-list-menu category-topic-item">
-                <h3>• 公共安全<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="6" class="category-list-menu category-topic-item">
-                <h3>• 文化休闲<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="7" class="category-list-menu category-topic-item">
-                <h3>• 卫生健康<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="8" class="category-list-menu category-topic-item">
-                <h3>• 民生服务<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="9" class="category-list-menu category-topic-item">
-                <h3>• 机构团体<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="10" class="category-list-menu category-topic-item">
-                <h3>• 城市建设<em class="ion-ios-arrow-forward"></em></h3>
-            </a><a href="javascript:" index="11" class="category-list-menu category-topic-item">
-                <h3>• 社会资源<em class="ion-ios-arrow-forward"></em></h3>
-            </a>                <div class="clear"></div>
-            </div>
-
-            <div class="category-group org-group-content hide">
-                <div class="org-group" style="border-right:1px solid #ededed;">
-                    <a href="/index.php/data/ls/type/0/d/11.html" class="category-list-menu category-org-item">
-                        <h3>• 省发展改革委</h3>
-                    </a><a href="/index.php/data/ls/type/0/d/12.html" class="category-list-menu category-org-item">
-                    <h3>• 省经济和信息化委</h3>
-                </a><a href="/index.php/data/ls/type/0/d/13.html" class="category-list-menu category-org-item">
-                    <h3>• 省教育厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/14.html" class="category-list-menu category-org-item">
-                    <h3>• 省科技厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/15.html" class="category-list-menu category-org-item">
-                    <h3>• 省民族宗教委</h3>
-                </a><a href="/index.php/data/ls/type/0/d/16.html" class="category-list-menu category-org-item">
-                    <h3>• 省公安厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/17.html" class="category-list-menu category-org-item">
-                    <h3>• 省监察厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/18.html" class="category-list-menu category-org-item">
-                    <h3>• 省民政厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/19.html" class="category-list-menu category-org-item">
-                    <h3>• 省司法厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/20.html" class="category-list-menu category-org-item">
-                    <h3>• 省财政厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/21.html" class="category-list-menu category-org-item">
-                    <h3>• 省人社厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/22.html" class="category-list-menu category-org-item">
-                    <h3>• 省国土资源厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/23.html" class="category-list-menu category-org-item">
-                    <h3>• 省环境保护厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/24.html" class="category-list-menu category-org-item">
-                    <h3>• 省住房城乡建设厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/25.html" class="category-list-menu category-org-item">
-                    <h3>• 省交通运输厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/26.html" class="category-list-menu category-org-item">
-                    <h3>• 省水利厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/27.html" class="category-list-menu category-org-item">
-                    <h3>• 省农业厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/28.html" class="category-list-menu category-org-item">
-                    <h3>• 省林业厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/29.html" class="category-list-menu category-org-item">
-                    <h3>• 省商务厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/30.html" class="category-list-menu category-org-item">
-                    <h3>• 省文化厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/31.html" class="category-list-menu category-org-item">
-                    <h3>• 省卫生计生委</h3>
-                </a><a href="/index.php/data/ls/type/0/d/32.html" class="category-list-menu category-org-item">
-                    <h3>• 省审计厅</h3>
-                </a><a href="/index.php/data/ls/type/0/d/33.html" class="category-list-menu category-org-item">
-                    <h3>• 省外办</h3>
-                </a><a href="/index.php/data/ls/type/0/d/34.html" class="category-list-menu category-org-item">
-                    <h3>• 省国资委</h3>
-                </a><a href="/index.php/data/ls/type/0/d/35.html" class="category-list-menu category-org-item">
-                    <h3>• 省地税局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/36.html" class="category-list-menu category-org-item">
-                    <h3>• 省工商局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/37.html" class="category-list-menu category-org-item">
-                    <h3>• 省质监局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/38.html" class="category-list-menu category-org-item">
-                    <h3>• 省新闻出版广电局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/39.html" class="category-list-menu category-org-item">
-                    <h3>• 省体育局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/40.html" class="category-list-menu category-org-item">
-                    <h3>• 省安全监管局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/41.html" class="category-list-menu category-org-item">
-                    <h3>• 省食品药品监管局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/42.html" class="category-list-menu category-org-item">
-                    <h3>• 省统计局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/43.html" class="category-list-menu category-org-item">
-                    <h3>• 省海洋渔业局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/44.html" class="category-list-menu category-org-item">
-                    <h3>• 省知识产权局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/45.html" class="category-list-menu category-org-item">
-                    <h3>• 省旅游局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/46.html" class="category-list-menu category-org-item">
-                    <h3>• 省侨办</h3>
-                </a><a href="/index.php/data/ls/type/0/d/47.html" class="category-list-menu category-org-item">
-                    <h3>• 省港澳办</h3>
-                </a><a href="/index.php/data/ls/type/0/d/48.html" class="category-list-menu category-org-item">
-                    <h3>• 省法制办</h3>
-                </a><a href="/index.php/data/ls/type/0/d/49.html" class="category-list-menu category-org-item">
-                    <h3>• 省金融办</h3>
-                </a><a href="/index.php/data/ls/type/0/d/111.html" class="category-list-menu category-org-item">
-                    <h3>• 省国税局</h3>
-                </a><a href="/index.php/data/ls/type/0/d/112.html" class="category-list-menu category-org-item">
-                    <h3>• 海关广东分署</h3>
-                </a><a href="/index.php/data/ls/type/0/d/181.html" class="category-list-menu category-org-item">
-                    <h3>• 省自贸办</h3>
-                </a>                    <div class="clear"></div>
+                        </ul>
+                    </div>
+                    <div class="wftop2lftop1_2 sj18">重点建设预安排项目信息</div>
                 </div>
-            </div>
-
-        </div>
-
-        <div class="menu">
-            <div class="menu-list">
-                <a href="/index.php/index/index.html"  class="active" >首页</a><a href="/index.php/data/ls/type/0.html"   >数据集</a><a href="/index.php/data/ls/type/1.html"   >数据接口</a><a href="/index.php/data/ls/type/2.html"   >数据应用</a><a href="/index.php/index/map.html" target="_blank"  >天地图</a><a href="/index.php/forum/index.html"   >交流互动</a><a href="/index.php/index/article.html"   >最新动态</a>            </div>
-
-            <div class="contact">
-                <a href="/index.php/index/apply.html"><span class="ion-pie-graph"></span>&nbsp;数据申请</a>
-                <a href="/index.php/index/articledetails/id/6.html"><span class="ion-android-call"></span>&nbsp;联系我们</a>
-            </div>
-            <div class="clear"></div>
-        </div>
-
-        <div class="category-list-child">
-            <div class="category-list-child-item">
-                <ul class="category-list-dataset">
-                    <h4>
-                        <span>•&nbsp;&nbsp;数 据</span>
-                        <a href="/index.php/data/ls.html">更多</a>
-                        <div class="clear"></div>
-                    </h4>
-                    <li><a href="/index.php/data/datasetdetail/id/153.html"><span>• 农产品地理标志登记产品信息</span><em>281次</em></a></li><li><a href="/index.php/data/datasetdetail/id/155.html"><span>• 肥料登记信息</span><em>278次</em></a></li><li><a href="/index.php/data/datasetdetail/id/160.html"><span>• 饲料行政许可证信息</span><em>313次</em></a></li><li><a href="/index.php/data/datasetdetail/id/161.html"><span>• 成品油仓储经营资格审核行政许可信息</span><em>2029次</em></a></li><li><a href="/index.php/data/datasetdetail/id/163.html"><span>• 成品油零售经营资格审批行政许可信息</span><em>291次</em></a></li><li><a href="/index.php/data/datasetdetail/id/164.html"><span>• 成品油批发经营资格审核行政许可信息</span><em>262次</em></a></li><li><a href="/index.php/data/datasetdetail/id/165.html"><span>• 种子经营许可证信息</span><em>273次</em></a></li><li><a href="/index.php/data/datasetdetail/id/167.html"><span>• 开办农药生产企业审核行政许可信息</span><em>281次</em></a></li><li><a href="/index.php/data/datasetdetail/id/168.html"><span>• 种子生产许可证信息</span><em>223次</em></a></li><li><a href="/index.php/data/datasetdetail/id/171.html"><span>• 农药生产批准证书审核行政许可信息</span><em>281次</em></a></li><li><a href="/index.php/data/datasetdetail/id/174.html"><span>• 南粤文化遗产数据库（古建筑）</span><em>195次</em></a></li><li><a href="/index.php/data/datasetdetail/id/182.html"><span>• 国有建设用地供应结果</span><em>160次</em></a></li>                                            </ul>
-                <ul class="category-list-app">
-                    <h4>
-                        <span>•&nbsp;&nbsp;应 用</span>
-                        <a href="/index.php/data/ls/type/2.html">更多</a>
-                        <div class="clear"></div>
-                    </h4>
-                    <li>
-                        <a href="/index.php/data/appdetail/id/146.html" title="广东省测绘地理信息市场监管与服务平台">
-                            <img src="/Uploads/Images/2016-06-27/5770a1b70395f.png" style="width:65px;height:65px" alt=""/>
-                            <span>广东省测绘地理信</span>
-                        </a>
-                    </li><li>
-                    <a href="/index.php/data/appdetail/id/147.html" title="广东统计示范应用系统">
-                        <img src="/Uploads/Images/2016-06-27/5770a398e0d69.png" style="width:65px;height:65px" alt=""/>
-                        <span>广东统计示范应用</span>
-                    </a>
-                </li><li>
-                    <a href="/index.php/data/appdetail/id/371.html" title="广东空气质量实况与预报APP">
-                        <img src="/Uploads/Images/2017-08-30/59a6583e20554.jpg" style="width:65px;height:65px" alt=""/>
-                        <span>广东空气质量实况</span>
-                    </a>
-                </li>                    </ul>
-            </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/156.html"><span>• 广东省中绿华夏有机农产品认证信息</span><em>254次</em></a></li><li><a href="/index.php/data/datasetdetail/id/159.html"><span>• 兽药生产许可证信息</span><em>159次</em></a></li><li><a href="/index.php/data/datasetdetail/id/166.html"><span>• 技术改造项目节能审查行政许可信息</span><em>196次</em></a></li><li><a href="/index.php/data/datasetdetail/id/180.html"><span>• 交通建设项目基本信息</span><em>85次</em></a></li><li><a href="/index.php/data/datasetdetail/id/208.html"><span>• 省管技术改造投资项目招标核准行政许可信息</span><em>136次</em></a></li><li><a href="/index.php/data/datasetdetail/id/210.html"><span>• 省核准的外商限制类技术改造项目核准行政许可信息</span><em>113次</em></a></li><li><a href="/index.php/data/datasetdetail/id/211.html"><span>• 农药广告许可审批信息</span><em>396次</em></a></li><li><a href="/index.php/data/datasetdetail/id/244.html"><span>• 广东省文化许可类信息</span><em>233次</em></a></li><li><a href="/index.php/data/datasetdetail/id/245.html"><span>• 广东省供应链管理拟试点企业名单 </span><em>163次</em></a></li><li><a href="/index.php/data/datasetdetail/id/246.html"><span>• 广东省互联网与工业融合创新试点名单</span><em>146次</em></a></li><li><a href="/index.php/data/datasetdetail/id/247.html"><span>• 广东省机器人骨干（培育）企业名单</span><em>129次</em></a></li><li><a href="/index.php/data/datasetdetail/id/248.html"><span>• 列入广东省售电公司目录的企业名单</span><em>149次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li>
-                    <a href="/index.php/data/appdetail/id/143.html" title="农博士APP">
-                        <img src="/Uploads/Images/2016-06-25/576e490e0f07a.png" style="width:65px;height:65px" alt=""/>
-                        <span>农博士APP</span>
-                    </a>
-                </li>                    </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/158.html"><span>• 农业标准信息</span><em>231次</em></a></li><li><a href="/index.php/data/datasetdetail/id/203.html"><span>• 广东省文化专业技术人员继续教育专业课目录</span><em>135次</em></a></li><li><a href="/index.php/data/datasetdetail/id/216.html"><span>• 2016年农业主推技术</span><em>149次</em></a></li><li><a href="/index.php/data/datasetdetail/id/265.html"><span>• 广东专利奖获奖单位信息</span><em>461次</em></a></li><li><a href="/index.php/data/datasetdetail/id/277.html"><span>• 地方标准批准发布信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/279.html"><span>• 高新技术企业认定信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/280.html"><span>• 广东省科学技术奖</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/281.html"><span>• 广东省科技项目信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/307.html"><span>• 高新技术企业认定信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/308.html"><span>•  广东省科学技术奖 </span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/309.html"><span>•  广东省科技项目信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/315.html"><span>•  产品质量检验机构验收（授予）证书信息</span><em>0次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/131.html"><span>• 天地图网络地图分块服务接口GetCapabilities操作</span><em>15次</em></a></li><li><a href="/index.php/data/datasetdetail/id/132.html"><span>• 天地图网络地图分块服务（简称WMTS）</span><em>55次</em></a></li><li><a href="/index.php/data/datasetdetail/id/133.html"><span>• 天地图Web地名地址要素服务接口</span><em>32次</em></a></li><li><a href="/index.php/data/datasetdetail/id/134.html"><span>• 天地图Web要素服务接口</span><em>15次</em></a></li><li><a href="/index.php/data/datasetdetail/id/135.html"><span>• 天地图Web地图服务接口</span><em>62次</em></a></li><li><a href="/index.php/data/datasetdetail/id/136.html"><span>• 天地图Web覆盖服务接口</span><em>10次</em></a></li><li><a href="/index.php/data/datasetdetail/id/137.html"><span>• 天地图Web处理服务接口</span><em>92次</em></a></li><li><a href="/index.php/data/datasetdetail/id/138.html"><span>• 天地图目录服务接口</span><em>93次</em></a></li><li><a href="/index.php/data/datasetdetail/id/178.html"><span>• 出租汽车企业</span><em>257次</em></a></li><li><a href="/index.php/data/datasetdetail/id/179.html"><span>• 营运船舶信息</span><em>242次</em></a></li><li><a href="/index.php/data/datasetdetail/id/181.html"><span>• 收费站基本信息</span><em>143次</em></a></li><li><a href="/index.php/data/datasetdetail/id/183.html"><span>• 道路旅客运输企业</span><em>267次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li>
-                    <a href="/index.php/data/appdetail/id/139.html" title="天地图 JAVASCRIPT SDK API ">
-                        <img src="/Uploads/Images/2016-06-25/576e1a1038fdd.png" style="width:65px;height:65px" alt=""/>
-                        <span>天地图 JAVA</span>
-                    </a>
-                </li><li>
-                <a href="/index.php/data/appdetail/id/141.html" title="天地图手机导航">
-                    <img src="/Uploads/Images/2016-06-25/576e239f62f40.png" style="width:65px;height:65px" alt=""/>
-                    <span>天地图手机导航</span>
-                </a>
-            </li><li>
-                <a href="/index.php/data/appdetail/id/144.html" title="重大灾情及突发事件遥感综合监测及应急辅助决策支撑系统">
-                    <img src="/Uploads/Images/2016-06-27/57709c5b8cea3.jpg" style="width:65px;height:65px" alt=""/>
-                    <span>重大灾情及突发事</span>
-                </a>
-            </li><li>
-                <a href="/index.php/data/appdetail/id/145.html" title="广东旅游示范应用系统">
-                    <img src="/Uploads/Images/2016-06-27/5770a2148919a.png" style="width:65px;height:65px" alt=""/>
-                    <span>广东旅游示范应用</span>
-                </a>
-            </li><li>
-                <a href="/index.php/data/appdetail/id/151.html" title="广东交通APP">
-                    <img src="/Uploads/Images/2016-07-20/578f253b69248.jpg" style="width:65px;height:65px" alt=""/>
-                    <span>广东交通APP</span>
-                </a>
-            </li><li>
-                <a href="/index.php/data/appdetail/id/266.html" title="广东省文化厅 • 公众出行指数">
-                    <img src="/Uploads/Images/2016-11-15/582abfaf1127d.png" style="width:65px;height:65px" alt=""/>
-                    <span>广东省文化厅 •</span>
-                </a>
-            </li>                    </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/312.html"><span>•  非正常户认定信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/314.html"><span>•  地方标准批准发布信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/341.html"><span>•  非正常户信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/365.html"><span>• 金融图书“金羊奖”获奖图书名单</span><em>129次</em></a></li><li><a href="/index.php/data/datasetdetail/id/452.html"><span>• 广东省历年旅游业收入一览表</span><em>59次</em></a></li><li><a href="/index.php/data/datasetdetail/id/438.html"><span>• 广东省各市旅游业收入情况</span><em>22次</em></a></li><li><a href="/index.php/data/datasetdetail/id/440.html"><span>• 广东省各市国际旅游(外汇)收入</span><em>12次</em></a></li><li><a href="/index.php/data/datasetdetail/id/442.html"><span>• 广东省各市接待过夜旅游者人数</span><em>9次</em></a></li><li><a href="/index.php/data/datasetdetail/id/451.html"><span>• 广东省旅游景点构成情况</span><em>42次</em></a></li><li><a href="/index.php/data/datasetdetail/id/454.html"><span>• 广东省旅游住宿设施接待过夜游客情况</span><em>34次</em></a></li><li><a href="/index.php/data/datasetdetail/id/455.html"><span>• 广东省旅行社组团历年接待人数</span><em>16次</em></a></li><li><a href="/index.php/data/datasetdetail/id/456.html"><span>• 广东省旅游入境人数统计信息</span><em>18次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/169.html"><span>• 民用爆炸物品安全生产行政许可信息</span><em>357次</em></a></li><li><a href="/index.php/data/datasetdetail/id/170.html"><span>• 民用爆炸物品销售行政许可信息</span><em>285次</em></a></li><li><a href="/index.php/data/datasetdetail/id/200.html"><span>• 监控化学品进出口业务审核行政许可信息</span><em>239次</em></a></li><li><a href="/index.php/data/datasetdetail/id/201.html"><span>• 监控化学品生产设施建设初审行政许可信息</span><em>110次</em></a></li><li><a href="/index.php/data/datasetdetail/id/204.html"><span>• 监控化学品生产特别许可审核行政许可信息</span><em>149次</em></a></li><li><a href="/index.php/data/datasetdetail/id/253.html"><span>• 个人文化市场行政处罚信息</span><em>129次</em></a></li><li><a href="/index.php/data/datasetdetail/id/258.html"><span>• 机构文化市场行政处罚信息</span><em>195次</em></a></li><li><a href="/index.php/data/datasetdetail/id/275.html"><span>• 经营第二类监控化学品审批行政许可信息</span><em>125次</em></a></li><li><a href="/index.php/data/datasetdetail/id/288.html"><span>• 机动车登记证信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/297.html"><span>• 广东省行政处罚信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/324.html"><span>• 医疗器械生产企业（二、三类）</span><em>304次</em></a></li><li><a href="/index.php/data/datasetdetail/id/325.html"><span>• 广东省医疗器械注册证（二类）</span><em>76次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/184.html"><span>• 稀有剧种多媒体数据库信息</span><em>409次</em></a></li><li><a href="/index.php/data/datasetdetail/id/186.html"><span>• 广东美术馆历年展览目录</span><em>124次</em></a></li><li><a href="/index.php/data/datasetdetail/id/189.html"><span>• 广东美术馆丛书系列目录</span><em>162次</em></a></li><li><a href="/index.php/data/datasetdetail/id/202.html"><span>• 广东省流动图书馆名录</span><em>205次</em></a></li><li><a href="/index.php/data/datasetdetail/id/205.html"><span>• 广东省非物质文化遗产名录</span><em>196次</em></a></li><li><a href="/index.php/data/datasetdetail/id/219.html"><span>• 广东省美术馆典藏名录</span><em>1467次</em></a></li><li><a href="/index.php/data/datasetdetail/id/220.html"><span>• 广东美术馆人文图书馆书目</span><em>151次</em></a></li><li><a href="/index.php/data/datasetdetail/id/221.html"><span>• 广东省博物馆历年展览目录</span><em>106次</em></a></li><li><a href="/index.php/data/datasetdetail/id/222.html"><span>• 广东省博物馆图书出版目录</span><em>140次</em></a></li><li><a href="/index.php/data/datasetdetail/id/223.html"><span>• 广东省博物馆珍贵藏品目录</span><em>328次</em></a></li><li><a href="/index.php/data/datasetdetail/id/224.html"><span>• 非遗专题片信息</span><em>150次</em></a></li><li><a href="/index.php/data/datasetdetail/id/234.html"><span>• 广东省文化活动场次信息</span><em>297次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li>
-                    <a href="/index.php/data/appdetail/id/140.html" title="粤港澳文化生活地图">
-                        <img src="/Uploads/Images/2016-06-25/576e1e55ab6eb.png" style="width:65px;height:65px" alt=""/>
-                        <span>粤港澳文化生活地</span>
-                    </a>
-                </li><li>
-                <a href="/index.php/data/appdetail/id/142.html" title="广东省文化网在线看书">
-                    <img src="/Uploads/Images/2016-06-25/576e5b31d9357.png" style="width:65px;height:65px" alt=""/>
-                    <span>广东省文化网在线</span>
-                </a>
-            </li>                    </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/154.html"><span>• 畜牧业无公害农产品认证信息</span><em>221次</em></a></li><li><a href="/index.php/data/datasetdetail/id/157.html"><span>• 绿色农产品认证信息</span><em>198次</em></a></li><li><a href="/index.php/data/datasetdetail/id/162.html"><span>• 种植业无公害农产品认证信息</span><em>257次</em></a></li><li><a href="/index.php/data/datasetdetail/id/213.html"><span>• 植物检疫行政许可审批信息</span><em>198次</em></a></li><li><a href="/index.php/data/datasetdetail/id/260.html"><span>• 广东省食品药品违法违规企业黑名单</span><em>169次</em></a></li><li><a href="/index.php/data/datasetdetail/id/278.html"><span>• 零售药店基本信息</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/321.html"><span>• 餐饮服务从业人员健康证明查询</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/322.html"><span>• 药学技术人员备案查询</span><em>0次</em></a></li><li><a href="/index.php/data/datasetdetail/id/323.html"><span>• 食品生产（保健食品）企业</span><em>57次</em></a></li><li><a href="/index.php/data/datasetdetail/id/327.html"><span>• 广东省药品批发企业库</span><em>59次</em></a></li><li><a href="/index.php/data/datasetdetail/id/328.html"><span>• 广东省药品零售连锁企业库</span><em>76次</em></a></li><li><a href="/index.php/data/datasetdetail/id/329.html"><span>• 药品生产企业</span><em>100次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-                <li><a href="/index.php/data/datasetdetail/id/206.html"><span>• 广东省文化馆名录</span><em>151次</em></a></li><li><a href="/index.php/data/datasetdetail/id/207.html"><span>• 广东博物馆目录</span><em>399次</em></a></li><li><a href="/index.php/data/datasetdetail/id/209.html"><span>• 广东图书馆目录</span><em>163次</em></a></li><li><a href="/index.php/data/datasetdetail/id/212.html"><span>• 农产品质量安全检测机构考核信息</span><em>322次</em></a></li><li><a href="/index.php/data/datasetdetail/id/218.html"><span>• 广东省美术馆名录</span><em>211次</em></a></li><li><a href="/index.php/data/datasetdetail/id/249.html"><span>• 纳税信用A级名单</span><em>317次</em></a></li><li><a href="/index.php/data/datasetdetail/id/251.html"><span>• 广东省“守合同重信用”公示企业信息</span><em>183次</em></a></li><li><a href="/index.php/data/datasetdetail/id/252.html"><span>• 个人荣誉信息</span><em>119次</em></a></li><li><a href="/index.php/data/datasetdetail/id/255.html"><span>• 广东省政府质量奖获奖单位信息</span><em>137次</em></a></li><li><a href="/index.php/data/datasetdetail/id/257.html"><span>• 机构荣誉信息</span><em>156次</em></a></li><li><a href="/index.php/data/datasetdetail/id/261.html"><span>• 广东省知识产权强企</span><em>193次</em></a></li><li><a href="/index.php/data/datasetdetail/id/276.html"><span>• 产品质量检验机构验收（授予）证书信息</span><em>0次</em></a></li>                                            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div><div class="category-list-child-item">
-            <ul class="category-list-dataset">
-                <h4>
-                    <span>•&nbsp;&nbsp;数 据</span>
-                    <a href="/index.php/data/ls.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-            <ul class="category-list-app">
-                <h4>
-                    <span>•&nbsp;&nbsp;应 用</span>
-                    <a href="/index.php/data/ls/type/2.html">更多</a>
-                    <div class="clear"></div>
-                </h4>
-            </ul>
-        </div>        </div>
 
 
 
-        <div class="clear"></div>
 
-    </div>
+                <div class="wftop2lftop2">
+                    <div class="wftop2lftop2lf">
 
-</div>
-<div class="clear"></div>
-
-<div class="wrapper">
-    <div class="content data-detail">
-        <div class="data-base">
-            <div class="data-avatar">
-                <img src="/Public/Home/images/cover/2.png" alt=""/>                </div>
-            <div class="base-info">
-                <p class="data-title">
-                    广东省政府集中采购目录及采购限额标准                    </p>
-                <table>
-                    <tr>
-                        <th>分类</th>
-                        <td>经济建设</td>
-                        <th>更新频率</th>
-                        <td>不定时更新</td>
-                        <th>关键字</th>
-                        <td>政府集中采购目录、采购限额标准</td>
-                    </tr>
-                    <tr>
-                        <th>数据适用范围</th>
-                        <td>全省</td>
-                        <th>创建时间</th>
-                        <td>2017-11-15</td>
-                        <th>最后修改时间</th>
-                        <td>2017-11-21</td>
-                    </tr>
-                    <tr>
-                        <th>下载次数</th>
-                        <td>11</td>
-                        <th>浏览次数</th>
-                        <td>55</td>
-                        <th>开放等级</th>
-                        <td>完全开放</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="data-action">
-                <button class="btn btn-warning ajax-submit ajax-get" data-href="/index.php/data/collectdata/id/465/data_type/0.html">收藏</button>
-            </div>
-            <div class="clear"></div>
-        </div>
-        <div class="data-description api-description">
-
-            <div class="data-tab">
-                <a index="0" class="on" href="javascript:"> 数据下载 </a>                    <a index="1" href="javascript:"> 相关信息 </a>
-                <div class="clear"></div>
-            </div>
+                        <img src="images/xz3_09.png" />
 
 
-            <div class="data-info-box">
-                <ul class="dateset-list">
-                    <li style="float:left;">
-                        <h4 style="margin:0;">2017-11-16</h4>
-                        <div class="clear"></div>
-                        <div class="dataset-item" style="margin-top:0">
-                            <div class="btn-group">
-                                <span class="item-ext">XLS</span>
-                                <button type="button" class="btn btn-default item-title" onclick="window.open('/index.php/data/datasetpreview/data_id/1617/id/465.html')">广东省2017年政府采购品目分类表</button>
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/index.php/data/datasetpreview/data_id/1617/id/465.html" target="_blank">预览</a></li>
-                                    <li><a href="/index.php/public/getdata/id/1617.html" target="_blank">下载</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                    </li><li style="float:left;">
-                    <h4 style="margin:0;">2017-11-16</h4>
-                    <div class="clear"></div>
-                    <div class="dataset-item" style="margin-top:0">
-                        <div class="btn-group">
-                            <span class="item-ext">XLS</span>
-                            <button type="button" class="btn btn-default item-title" onclick="window.open('/index.php/data/datasetpreview/data_id/1616/id/465.html')">广东省2017年政府集中采购目录</button>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="/index.php/data/datasetpreview/data_id/1616/id/465.html" target="_blank">预览</a></li>
-                                <li><a href="/index.php/public/getdata/id/1616.html" target="_blank">下载</a></li>
+
+
+
+
+
+
+
+
+                    </div>
+                    <div class="wftop2lftop2rt">
+                        <div class="wftop2lftop2rt_1">
+                            <ul>
+                                <li class="cy666" title="2015年省重点建设预安排项目名单.doc">
+
+                                    文件名：2015年省重点建设...
+
+                                </li>
+                                <li class="cy666">文件大小：38KB
+                                </li>
+                                <li class="cy666">下载次数：184</li>
+                                <li class="cy666">上传时间：20150611</li>
                             </ul>
                         </div>
+                        <div class="wftop2lftop2rt_2">
+                            <a href="javascript:download('2015年省重点建设预安排项目名单.doc')"><img
+                                    src="images/wfdw_13.png" /></a>
+                        </div>
                     </div>
-                    <div class="clear"></div>
-                </li>                                <div class="clear"></div>                        </ul>
-            </div>
-            <div class="data-info-box hide">
-                <ul>
-                    <li>
-                        <span class="p1">相关信息：</span>
-                        <span>
-                                  <table class="table table-bordered">
-                                      <tr>
-                                          <th>资源类型</th>
-                                          <td>数据集</td>
-                                      </tr>
-                                      <tr>
-                                          <th>创建时间</th>
-                                          <td>2017-11-15</td>
-                                      </tr>
-                                      <tr>
-                                          <th>更新时间</th>
-                                          <td>2017-11-21</td>
-                                      </tr>
-                                      <!--    <tr>
-                                              <th>上传者</th>
-                                              <td>....</td>
-                                          </tr>
-                                          <tr>
-                                              <th>唯一编号</th>
-                                              <td>ZXIEWI5D6</td>
-                                          </tr>-->
-                                      <tr>
-                                          <th>维护</th>
-                                          <td>广东省财政厅</td>
-                                      </tr>
-                                      <tr>
-                                          <th>联系方式</th>
-                                          <td>广州市越秀区北京路376号</td>
-                                      </tr>
-                                      <tr>
-                                          <th>公开方式</th>
-                                          <td>完全开放</td>
-                                      </tr>
-                                  </table>
-                            </span>
-                    </li>
-                </ul>
-            </div>
+                </div>
 
+
+
+
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">资源摘要：</div>
+                    <div class="wftop2lftop3_2 sjjk12">
+                        重点建设预安排项目名单
+                    </div>
+                </div>
+
+
+
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">关键字：</div>
+                    <div class="wftop2lftop3_2 sjjk12">重点建设预安排项目</div>
+                </div>
+
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">数据来源：</div>
+                    <div class="wftop2lftop3_2 sjjk12">浙江省发展和改革委员会 浙江省政府1号楼</div>
+                </div>
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">信息资源发布日期：</div>
+                    <div class="wftop2lftop3_2 sjjk12">2015-06-10</div>
+                </div>
+
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">信息资源提供方：</div>
+                    <div class="wftop2lftop3_2 sjjk12">浙江省发展和改革委员会 浙江省政府1号楼</div>
+                </div>
+
+                <div class="wftop2lftop3">
+                    <div class="wftop2lftop3_1 sj14">更新频率：</div>
+                    <div class="wftop2lftop3_2 sjjk12">
+
+
+
+
+
+
+
+
+
+
+                        2
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="wftop2rt">
+                <div class="wftop2rttop">
+                    <div class="wftop2rttop_1 sj25">最新资源</div>
+                    <div class="wftop2rttop_2"><img src="images/wfdw_06.png" /></div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="10月份浙江经济运行继续呈现上行态势"><a href="deptdetail.action?resid=210564/20171117120835000444&frontcode=210564">
+
+                                10月份浙江经济运行继续...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-11-17</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="研发支出核算方法改革对我省GDP核算数据的影响"><a href="deptdetail.action?resid=210564/20171110144832000251&frontcode=210564">
+
+                                研发支出核算方法改革对我...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-11-10</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="浙江消费者信心指数持续走强"><a href="deptdetail.action?resid=210564/20171110145328000984&frontcode=210564">
+
+                                浙江消费者信心指数持续走...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-11-10</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度房地产开发投资较快增长"><a href="deptdetail.action?resid=210564/20171031155223000067&frontcode=210564">
+
+                                前三季度房地产开发投资较...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-10-31</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度规模以上工业增加值增长8.3%"><a href="deptdetail.action?resid=210564/20171027151810000769&frontcode=210564">
+
+                                前三季度规模以上工业增加...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-10-27</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度浙江经济持续稳走向好"><a href="deptdetail.action?resid=210564/20171027155006000648&frontcode=210564">
+
+                                前三季度浙江经济持续稳走...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-10-27</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省统计局]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="创新对浙江经济增长和就业增收的影响分析"><a href="deptdetail.action?resid=210564/20171011145147000177&frontcode=210564">
+
+                                创新对浙江经济增长和就业...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 cy999">2017-10-11</li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="wftop2rttop">
+                    <div class="wftop2rttop2_1 sj25">最热下载</div>
+                    <div class="wftop2rttop_2"><img src="images/wfdw_26.png" /></div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省教育厅]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="浙江省学校信息"><a href="deptdetail.action?resid=210512/20150610110144613124&frontcode=210512">
+
+
+                                浙江省学校信息
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">4627</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省发改委]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="2016年省重点建设项目名单"><a href="deptdetail.action?resid=210508/20160513093832000447&frontcode=210508">
+
+                                2016年省重点建设项目...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">4296</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+                                [省测绘与...]
+
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="一带一路图"><a href="deptdetail.action?resid=210532/20151203330000010001&frontcode=210532">
+
+
+                                一带一路图
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">1397</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省发改委]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="省重点项目信息"><a href="deptdetail.action?resid=210508/20150610110144613071&frontcode=210508">
+
+
+                                省重点项目信息
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">1087</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省经信委]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="具有高级工程师或教授级高级工程师资格评定名单"><a href="deptdetail.action?resid=210511/20150610110144613054&frontcode=210511">
+
+                                具有高级工程师或教授级高...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">868</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省发改委]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="2016年省重点建设预安排项目名单"><a href="deptdetail.action?resid=210508/20160513091620000982&frontcode=210508">
+
+                                2016年省重点建设预安...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">569</li>
+                        </ul>
+                    </div>
+
+                    <div class="wftop2rttop_2">
+                        <ul>
+                            <li class="wftop2rttop_2_l sjjk12">
+
+
+                                [省发改委]
+
+                            </li>
+                            <li class="wftop2rttop_2_2 sjjklb"  title="新增省重点建设项目开工信息"><a href="deptdetail.action?resid=210508/20150610110144613073&frontcode=210508">
+
+                                新增省重点建设项目开工信...
+
+
+                            </a></li>
+                            <li class="wftop2rttop_2_3 wfrq">507</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
         </div>
+        <!--2排end-->
     </div>
 </div>
-
-<div class="wrapper footer">
-    <div class="content">
-        <div class="footer-left">
-            <img src="/Public/New/img/slogo.png" alt="" />
-            <p class="phone">
-                020-83866567            </p>
-        </div>
-        <div class="footer-middle">
-            <div class="footer-menu">
-                <a href="">新手引导</a>
-                <a href="/index.php/index/articledetails/id/6.html">联系我们</a>
-                <a href="/index.php/index/articledetails/id/5.html">服务条款</a>
-                <a href="">隐私政策</a>
-                <a href="" style="border:0;">友情链接</a>
-            </div>
-            <div class="copyright">
-                <p>主办单位：广东省经济和信息化委员会&nbsp;&nbsp;&nbsp;服务支持：广东省电子政务协会</p>
-                <!--<p>广东省经济和信息化委员会     020-83866567</p>-->
-            </div>
-        </div>
-        <div class="footer-right">
-            <img src="/Public/New/img/qrcode.png" alt="" style="background:#fff;padding:5px 5px 5px 8px;border-radius:5px;margin-bottom:3px;" />
-            <p>扫一扫关注官方微信</p>
-        </div>
-        <script type="text/javascript">document.write(unescape("%3Cspan id='_ideConac' %3E%3C/span%3E%3Cscript src='http://dcs.conac.cn/js/20/000/0000/45004352/CA200000000450043520009.js' type='text/javascript'%3E%3C/script%3E"));</script>
-    </div>
-</div>
-<script>
-    /*CSS默认初始化*/
-    $('.category-topic-item').last().css('border',0)
-    /*END*/
-
-    /*分类显示隐藏*/
-    var category_item_out = '';
-    var category_out = '';
-
-
-    $('.category-list-menu').mouseover(function(){
-        clearTimeout(category_out);
-        var index = $(this).attr('index');
-        $('.category-list-child-item').eq(index).show();
-    })
-    $('.category-list-menu').mouseleave(function(){
-        var index = $(this).attr('index');
-        category_item_out = setTimeout(function(){
-            $('.category-list-child-item').eq(index).hide();
-        },300)
-    })
-
-    $('.all-category span').mouseover(function(){
-        var eq = $(this).attr('data-id');
-        $(this).addClass('on').siblings().removeClass('on')
-        if( eq == '0' ){
-            $('.topic-group').removeClass('hide');
-            $('.org-group-content').addClass('hide');
-            if( $('.category-list').hasClass('static') ){
-                $('.org-group-content').animate({width:'225px'},'fast');
-            }else{
-                $('.org-group-content').animate({width:'225px',height:0},'fast');
-            }
-        }else{
-            $('.topic-group').addClass('hide');
-            $('.org-group-content').removeClass('hide');
-            if( $('.category-list').hasClass('static') ){
-                $('.org-group-content').animate({width:'700px'},'fast');
-            }else{
-                $('.org-group-content').animate({width:'700px',height:'420px'},'fast');
-            }
-        }
-    })
-
-    $('.category-list-child-item').mouseover(function(){
-        clearTimeout(category_item_out);
-        clearTimeout(category_out);
-    })
-
-    $('.category-list-child-item').mouseleave(function(){
-        $(this).hide();
-        category_out = setTimeout(function(){
-            if( !$('.category-list').hasClass('static') ) {
-                $('.category-group').slideUp();
-            }
-        },300)
-    })
-    /*END*/
-
-    /*分类菜单收缩折叠*/
-    if(!$('.category-list').hasClass('static')) {
-        $('.category-group').hide();
-        $('.all-category').mouseover(function () {
-            $('.category-group').slideDown();
-        })
-        $('.category-list').mouseleave(function () {
-            category_out = setTimeout(function(){
-                $('.category-group').slideUp();
-            },300)
-        })
-    }
-    /*END*/
-
-    function target_select(obj){
-        var val = $(obj).attr('data-value');
-        var input = $(obj).parent().attr('data-select');
-        var name = $(obj).children().eq(0).html();
-        $(obj).parent().prev().html(name+'&nbsp;&nbsp;<span class="caret"></span>')
-        $('input[name='+input+']').val(val);
-    }
-
-    $.each($('.full-star'),function(){
-        var score = $(this).attr('data-score');
-        $(this).css('width',(score / 5) * 100 + '%');
-    })
-
-    var _hmt = _hmt || [];
-    (function() {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?38949828f4232aaebd6a039786aa54af";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
-</script>
-
-<script>
-    $('.data-tab a').click(function(){
-        var index = $(this).attr('index');
-        $('.data-info-box').eq(index).removeClass('hide').siblings('.data-info-box').addClass('hide')
-        $(this).addClass('on').siblings().removeClass('on');
-    })
-
-    $('.view-less').click(function() {
-        $(this).parent().siblings().hide();
-        $(this).removeClass('ion-arrow-up-b').addClass('ion-arrow-down-b');
-        $(this).addClass('hide').siblings().removeClass('hide');
-    })
-
-    $('.view-more').click(function() {
-        $(this).parent().siblings().show();
-        $(this).removeClass('ion-arrow-down-b').addClass('ion-arrow-up-b');
-        $(this).addClass('hide').siblings().removeClass('hide');
-    })
-</script>
-
+<!-- 版权和底部导航开始 -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:30px;">
+    <tr>
+        <td height="112" align="center"><script language='javascript' src='http://www.zjzwfw.gov.cn/script/bottom/bottom_sj_data.js'></script>
+            <div id="sysearch" style="display:none;"><script language="javascript" src="http://www.zjzwfw.gov.cn/script/jsearch_sy/jsearch_nb.js"></script></div>
+        </td>
+    </tr>
+</table>
+<!-- 版权和底部导航结束 -->
 </body>
 </html>

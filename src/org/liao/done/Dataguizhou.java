@@ -11,20 +11,16 @@ import java.util.List;
 /**
  * Created by liao on 17-11-24.
  */
-public class Dataguangdong {
+public class Dataguizhou {
     public static void fun() throws IOException {
         List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 21; i++) {
-            String requestUrl = "http://www.gddata.gov.cn/index.php/data/ls/type/0/p/"+i+".html";
-
-            Document doc= Jsoup.connect(requestUrl).get();
-            Elements links = doc.select("p.data-title > a[href]");
+            Document doc= Jsoup.parse("");
+            Elements links = doc.select("h3 > a[href]");
 
             for (int j = 0; j < links.size(); j++) {
-                list.add("http://www.gddata.gov.cn/" + links.get(j).attr("href"));
+                list.add("http://www.gzdata.gov.cn/" + links.get(j).attr("href"));
             }
-        }
 
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));
@@ -61,10 +57,19 @@ public class Dataguangdong {
 
             Document doc= Jsoup.connect(requestUrl).get();
 
-            Elements e1 = doc.select("p.data-title");
+            Elements e1 = doc.select("table").get(0).select("td");
 
-            System.out.println(e1.get(0));
-            l1.set(i,e1.get(0).text());
+            for (int j = 0; j < e1.size(); j++) {
+                if (!e1.get(j).text().equals("")) {
+                    String t = e1.get(j).text();
+                    if (t.contains(",")) {
+                        t = t.replaceAll(",",".");
+                    }
+                    l1.set(i, l1.get(i)+","+t);
+                } else if (e1.get(j).text().equals("")) {
+                    l1.set(i, l1.get(i)+",None");
+                }
+            }
         }
 
 
@@ -72,7 +77,7 @@ public class Dataguangdong {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/Datazhejiang.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/Datazhejiang.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(l1!=null && !l1.isEmpty()){
@@ -111,7 +116,7 @@ public class Dataguangdong {
         }
     }
     public static void main(String[] args) throws IOException {
-        fun2();
+        fun();
     }
 
 

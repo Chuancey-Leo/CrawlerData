@@ -1,4 +1,4 @@
-package org.liao;
+package org.liao.done;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,19 +11,19 @@ import java.util.List;
 /**
  * Created by liao on 17-11-24.
  */
-public class Dataguangdong {
+public class Datazhejiang {
     public static void fun() throws IOException {
         List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 21; i++) {
-            String requestUrl = "http://www.gddata.gov.cn/index.php/data/ls/type/0/p/"+i+".html";
+        Document doc= Jsoup.parse("");
+        Elements links = doc.select("div.sjtop2rttop2_1");
 
-            Document doc= Jsoup.connect(requestUrl).get();
-            Elements links = doc.select("p.data-title > a[href]");
+        for (int j = 0; j < links.size(); j++) {
+            String s = links.get(j).attr("onclick");
+            String[] l = s.split("'");
+            System.out.println("http://data.zjzwfw.gov.cn/" + l[1]);
+            //list.add("http://data.zjzwfw.gov.cn/" + links.get(j).attr("href"));
 
-            for (int j = 0; j < links.size(); j++) {
-                list.add("http://www.gddata.gov.cn/" + links.get(j).attr("href"));
-            }
         }
 
         for (int i = 0; i < list.size(); i++) {
@@ -33,7 +33,7 @@ public class Dataguangdong {
 
     public static void fun2() throws IOException {
         /* 读入TXT文件 */
-        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/Dataguangdong.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
+        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/Datazhejiang.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
         File filename = new File(pathname); // 要读取以上路径的input。txt文件
         InputStreamReader reader = new InputStreamReader(
                 new FileInputStream(filename)); // 建立一个输入流对象reader
@@ -51,7 +51,7 @@ public class Dataguangdong {
         }
 
         List<String> l1 = new ArrayList<>();
-        for (int i = 0; i < 209; i++) {
+        for (int i = 0; i < 122; i++) {
             l1.add("");
         }
 
@@ -61,7 +61,7 @@ public class Dataguangdong {
 
             Document doc= Jsoup.connect(requestUrl).get();
 
-            Elements e1 = doc.select("table").get(0).select("td");
+            Elements e1 = doc.select(".wftop2lftop1_2").select(".sj18");
 
             for (int j = 0; j < e1.size(); j++) {
                 if (!e1.get(j).text().equals("")) {
@@ -69,11 +69,13 @@ public class Dataguangdong {
                     if (t.contains(",")) {
                         t = t.replaceAll(",",".");
                     }
-                    l1.set(i, l1.get(i)+","+t);
+                    l1.set(i, t);
                 } else if (e1.get(j).text().equals("")) {
-                    l1.set(i, l1.get(i)+",None");
+                    l1.set(i, "None");
                 }
             }
+
+
         }
 
 
@@ -81,7 +83,7 @@ public class Dataguangdong {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/Dataguangdong.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/Datazhejiang.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(l1!=null && !l1.isEmpty()){
