@@ -1,556 +1,232 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!DOCTYPE HTML>
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Cache-Control" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>浙江省公共数据开放目录</title>
-    <link href="css/public.css" rel="stylesheet" type="text/css" />
-    <link href="css/wfdw.css" rel="stylesheet" type="text/css" />
-    <link href="css/wfdw3.css" rel="stylesheet" type="text/css" />
-    <script src="js/jquery-1.7.2.min.js"></script>
-    <script src="js/UrlEncode.js"></script>
-    <script type="text/javascript">
-        String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
-            if (!RegExp.prototype.isPrototypeOf(reallyDo)) {
-                return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi": "g")), replaceWith);
-            } else {
-                return this.replace(reallyDo, replaceWith);
-            }
-        }
-        function search(){
-            var key = document.getElementById("key").value;
-            if(keyIsnotNull(key)){
-                document.getElementById("mySearchForm").submit();
-            }
-        }
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
+    <title>肇庆市人民政府-2016年肇庆市农村经济运行情况</title>
+    <link href="../../../../images/2015zq_base_style.css" rel="stylesheet" type="text/css">
+    <link href="../../../../images/2015zq_data_style.css" rel="stylesheet" type="text/css">
+    <meta name="keywords" content=",2016年肇庆市农村经济运行情况" />
+    <meta name="description" content=",2016年肇庆市农村经济运行情况" />
 
-        function download(url){
-            $.ajax({
-                type: "post",
-                contentType: "application/json;charset=UTF-8",
-                url: "download.action?fileName="+encodeURI(encodeURI(url)),
-                success: function(data) {
-                }
-            });
-            window.open("file.down?fileRoot=uploads&fileName="+encodeURI(encodeURI(url)));
-        }
 
-        function keySearch(resid, listNum, cateCode) {
-            var key = $("#keySearch").val();
-            var encode = $("#interface_encoding").val();
-            if(keyIsnotNull(key)){
-
-                if( $("#interface_type").val() == 2) {
-                    var href = $("#interface_links").val();
-                    var arg = "";
-
-                    if(encode=="gb2312"){
-                        arg = href.replaceAll("某某", encodeToGb2312(key));
-                    }else{
-                        arg = href.replaceAll("某某", key);
-                    }
-                    window.open(encodeURI(arg));
-                    return;
-                }
-
-                if($("#interface_type").val() == 3) {
-                    var href = $("#interface_links").val();
-                    var arg = "";
-                    if(encode=="gb2312"){
-                        arg = $("#interface_arg1namevalue").val().replace("?", encodeToGb2312(key))
-                    }else{
-                        arg = $("#interface_arg1namevalue").val().replace("?", key)
-                    }
-                    window.open(href + arg);
-                    return;
-                }
-
-                var args={resid:resid, searchKey:key , listNum: listNum, cateCode:cateCode};
-                $.ajax({
-                    type : "post",
-                    url  : "getAllData.action",
-                    data : args,
-                    async : true,
-                    success : function(data){
-                        var re = data.split("||");
-                        initDiv();
-                        if(cateCode!=""){
-                            $("#search_value").html(re[1]);
-                            if(re.length == 3 && re[2] != "") {
-                                $("#search_step").attr("class", "dzpage cy666");
-                                $("#search_step").html(re[2]);
-                            }
-                            $("#searchDetail").show();
-                        }else{
-                            var res = re[1].split("&&");
-                            if(res[1]=="1"){
-                                $("#showButton").show();
-                            }
-                            $("#search_value").html(res[0]);
-                            $("#searchDetail").show();
-
-                            $("#search_value2").html(res[2]);
-                            $("#searchDetail2").hide();
-                        }
-                    },
-                    error : function(){
-                        showWarning("没有找到！");
-                    }
-                });
-            } else {
-                alert("请输入查询的关键字");
-            }
-        }
-
-        function initDiv() {
-            $("#search_value").html("");
-            $("#search_step").attr("class", "");
-            $("#search_step").html("");
-        }
-
-        function keyIsnotNull(key) {
-            var describe = $("#interface_describe").val();
-            if(key != null && key != "" && key != describe) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    </script>
 </head>
+
 <body>
-<div id="hiddenLocation" style="display:none;"><span id="ss_webid">1</span>
-    <span id="col1_name">数据开放</span>
-    <span id="col1_url">http://data.zjzwfw.gov.cn</span>
-</div>
-<!-- banner开始 -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td height="97" align="center"><script language='javascript' src='http://www.zjzwfw.gov.cn/script/banner/banner_No3.js'></script></td>
-    </tr>
-</table>
-<!-- banner结束 -->
-
-<!-- 导航开始 -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-bottom:2px solid #659cca;">
-    <tr>
-        <td align="center" height="36"></script><script language='javascript' src='http://www.zjzwfw.gov.cn/script/nav/nav_sj.js'></script>
-            <script language='javascript' src='http://www.zjzwfw.gov.cn/script/nav/setNav.js'></script>
-        </td>
-    </tr>
-</table>
-<!-- 导航结束 -->
-<div class="zbg">
-    <div class="top">
-        <div class="logo"><a href="/"><img src="images/ggsjsy_01_03.png" /></a></div>
-    </div>
-    <div class="top2">
-        <!--首排-->
-        <div class="sjtop">
-            <div class="biaot"><a href="/"><img src="images/sjly_04.png" align="middle" /></a></div>
-            <!--search-->
-            <form id="mySearchForm" action="/search.action" method="post">
-                <div class="mySearch">
-                    <ul>
-                        <li><a href="javascript:search();"><img src="images/ggsjsy_07.png" /></a></li>
-                        <li class="mySearchli">
-                            <input name="keyword" id="key" type="text" class="mySearchip cysh" value="请输入关键字"
-                                   onblur="if(this.value==''){this.value='请输入关键字'}" onfocus="if(this.value=='请输入关键字'){this.value=''}"/>
-                        </li>
-                        <li><a href="javascript:search();"><img src="images/ggsjsy_10.png" /></a></li>
-                    </ul>
-                </div>
-            </form>
-            <!--search end-->
-        </div>
-        <!--首排end-->
-        <div class="wftop2">
-            <div class="wftop2lf">
-                <div class="wftop2lftop1">
-                    <div class="wftop2lftop1_1">
-                        <ul>
-                            <li class="cysh">当前位置：</li>
-                            <li class="cy3d3"><a href="/">首页</a></li>
-                            <li class="cysh">></li>
-
-                            <li class="cy3d3"><a href="toCate.action">数据领域</a></li>
-                            <li class="cysh">></li>
-                            <li class="cy3d3"><a href="toCate.action?catecode=SJLY001">经济建设</a></li>
-
-
-
-                        </ul>
-                    </div>
-                    <div class="wftop2lftop1_2 sj18">重点建设预安排项目信息</div>
-                </div>
-
-
-
-
-                <div class="wftop2lftop2">
-                    <div class="wftop2lftop2lf">
-
-                        <img src="images/xz3_09.png" />
-
-
-
-
-
-
-
-
-
-
-                    </div>
-                    <div class="wftop2lftop2rt">
-                        <div class="wftop2lftop2rt_1">
-                            <ul>
-                                <li class="cy666" title="2015年省重点建设预安排项目名单.doc">
-
-                                    文件名：2015年省重点建设...
-
-                                </li>
-                                <li class="cy666">文件大小：38KB
-                                </li>
-                                <li class="cy666">下载次数：184</li>
-                                <li class="cy666">上传时间：20150611</li>
-                            </ul>
-                        </div>
-                        <div class="wftop2lftop2rt_2">
-                            <a href="javascript:download('2015年省重点建设预安排项目名单.doc')"><img
-                                    src="images/wfdw_13.png" /></a>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">资源摘要：</div>
-                    <div class="wftop2lftop3_2 sjjk12">
-                        重点建设预安排项目名单
-                    </div>
-                </div>
-
-
-
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">关键字：</div>
-                    <div class="wftop2lftop3_2 sjjk12">重点建设预安排项目</div>
-                </div>
-
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">数据来源：</div>
-                    <div class="wftop2lftop3_2 sjjk12">浙江省发展和改革委员会 浙江省政府1号楼</div>
-                </div>
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">信息资源发布日期：</div>
-                    <div class="wftop2lftop3_2 sjjk12">2015-06-10</div>
-                </div>
-
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">信息资源提供方：</div>
-                    <div class="wftop2lftop3_2 sjjk12">浙江省发展和改革委员会 浙江省政府1号楼</div>
-                </div>
-
-                <div class="wftop2lftop3">
-                    <div class="wftop2lftop3_1 sj14">更新频率：</div>
-                    <div class="wftop2lftop3_2 sjjk12">
-
-
-
-
-
-
-
-
-
-
-                        2
-
-                    </div>
-                </div>
-
-            </div>
-            <div class="wftop2rt">
-                <div class="wftop2rttop">
-                    <div class="wftop2rttop_1 sj25">最新资源</div>
-                    <div class="wftop2rttop_2"><img src="images/wfdw_06.png" /></div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="10月份浙江经济运行继续呈现上行态势"><a href="deptdetail.action?resid=210564/20171117120835000444&frontcode=210564">
-
-                                10月份浙江经济运行继续...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-11-17</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="研发支出核算方法改革对我省GDP核算数据的影响"><a href="deptdetail.action?resid=210564/20171110144832000251&frontcode=210564">
-
-                                研发支出核算方法改革对我...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-11-10</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="浙江消费者信心指数持续走强"><a href="deptdetail.action?resid=210564/20171110145328000984&frontcode=210564">
-
-                                浙江消费者信心指数持续走...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-11-10</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度房地产开发投资较快增长"><a href="deptdetail.action?resid=210564/20171031155223000067&frontcode=210564">
-
-                                前三季度房地产开发投资较...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-10-31</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度规模以上工业增加值增长8.3%"><a href="deptdetail.action?resid=210564/20171027151810000769&frontcode=210564">
-
-                                前三季度规模以上工业增加...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-10-27</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="前三季度浙江经济持续稳走向好"><a href="deptdetail.action?resid=210564/20171027155006000648&frontcode=210564">
-
-                                前三季度浙江经济持续稳走...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-10-27</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省统计局]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="创新对浙江经济增长和就业增收的影响分析"><a href="deptdetail.action?resid=210564/20171011145147000177&frontcode=210564">
-
-                                创新对浙江经济增长和就业...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 cy999">2017-10-11</li>
-                        </ul>
-                    </div>
-
-                </div>
-                <div class="wftop2rttop">
-                    <div class="wftop2rttop2_1 sj25">最热下载</div>
-                    <div class="wftop2rttop_2"><img src="images/wfdw_26.png" /></div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省教育厅]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="浙江省学校信息"><a href="deptdetail.action?resid=210512/20150610110144613124&frontcode=210512">
-
-
-                                浙江省学校信息
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">4627</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省发改委]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="2016年省重点建设项目名单"><a href="deptdetail.action?resid=210508/20160513093832000447&frontcode=210508">
-
-                                2016年省重点建设项目...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">4296</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-                                [省测绘与...]
-
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="一带一路图"><a href="deptdetail.action?resid=210532/20151203330000010001&frontcode=210532">
-
-
-                                一带一路图
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">1397</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省发改委]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="省重点项目信息"><a href="deptdetail.action?resid=210508/20150610110144613071&frontcode=210508">
-
-
-                                省重点项目信息
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">1087</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省经信委]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="具有高级工程师或教授级高级工程师资格评定名单"><a href="deptdetail.action?resid=210511/20150610110144613054&frontcode=210511">
-
-                                具有高级工程师或教授级高...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">868</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省发改委]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="2016年省重点建设预安排项目名单"><a href="deptdetail.action?resid=210508/20160513091620000982&frontcode=210508">
-
-                                2016年省重点建设预安...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">569</li>
-                        </ul>
-                    </div>
-
-                    <div class="wftop2rttop_2">
-                        <ul>
-                            <li class="wftop2rttop_2_l sjjk12">
-
-
-                                [省发改委]
-
-                            </li>
-                            <li class="wftop2rttop_2_2 sjjklb"  title="新增省重点建设项目开工信息"><a href="deptdetail.action?resid=210508/20150610110144613073&frontcode=210508">
-
-                                新增省重点建设项目开工信...
-
-
-                            </a></li>
-                            <li class="wftop2rttop_2_3 wfrq">507</li>
-                        </ul>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!--2排end-->
+<!--nav-sub-top-头部菜单栏-->
+<div class="nav-sub-top">
+    <div class="nav-sub  " >
+        <ul class="clearfix" id="clearfixUl">
+
+        </ul>
     </div>
 </div>
-<!-- 版权和底部导航开始 -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:30px;">
-    <tr>
-        <td height="112" align="center"><script language='javascript' src='http://www.zjzwfw.gov.cn/script/bottom/bottom_sj_data.js'></script>
-            <div id="sysearch" style="display:none;"><script language="javascript" src="http://www.zjzwfw.gov.cn/script/jsearch_sy/jsearch_nb.js"></script></div>
-        </td>
-    </tr>
-</table>
-<!-- 版权和底部导航结束 -->
+<!--nav-sub-top-头部菜单栏-->
+<div class="col">
+    <!--头部start-->
+
+    <!--head start-->
+    <div class="topbar clearfix">
+    	<span class="f-l" id="top_time">
+
+</span>
+        <span class="f-r"><a href="http://www.zhaoqing.gov.cn/tbdhl/zwyx/" target="_blank" >政务邮箱</a><em>|</em><a href="http://www.zhaoqing.gov.cn/tbdhl/yjdy/" target="_blank">邮件订阅</a><em>|</em><a href="http://www.zhaoqing.gov.cn/tbdhl/ywxt/" target="_blank">业务系统</a><em>|</em><a href="http://wza.zhaoqing.gov.cn/">无障碍通道</a><em>|</em><a href="http://www.zhaoqing.gov.cn/tbdhl/ywb/" target="_blank">English</a><em>|<em>
+    <a href="javascript:StranBody()" class="a1" id="StranLink" style="padding-left:3px;padding-right:3px" title="點擊以繁體中文方式瀏覽">繁體版</a><script src="/images/language.js?a=1"></script>
+    </em>
+    </span>
+    </div>
+    <div class="logo"><a href="#" title="肇庆市人民政府" target="_blank"><img src="/images/2015zq_logo.png?a=1" alt="肇庆市人民政府" /></a></div>
+    <ul class="nav clearfix" id="navClearfixUl">
+        <li class="a1"><a href="http://www.zhaoqing.gov.cn/"  target="_blank" id="tb_81">首页</a></li>
+        <li class="a2"><a href="http://www.zhaoqing.gov.cn/xwzx/" target="_blank" id="tb_13334">资讯</a></li>
+        <li class="a3"><a href="http://www.zhaoqing.gov.cn/mczq/" target="_blank" id="tb_13345">市情</a></li>
+        <li class="a4"><a href="http://www.zhaoqing.gov.cn/xxgk/" target="_blank" id="tb_13369">政策</a></li>
+        <li class="a5"><a href="http://wsbs.zhaoqing.gov.cn/" target="_blank" id="tb_13412">办事</a></li>
+        <li class="a6"><a href="http://www.zhaoqing.gov.cn/msfw/" target="_blank" id="tb_13415">服务</a></li>
+        <li class="a7"><a href="http://www.zhaoqing.gov.cn/hdjl/" target="_blank" id="tb_13527">互动</a></li>
+        <li class="a8"><a href="http://www.zhaoqing.gov.cn/sjkf/" target="_blank" id="tb_13507">数据</a></li>
+
+    </ul>
+
+
+    <div class=""></div>
+    <!--head end-->
+    <!--头部end-->
+
+    <!--search start-->
+    <!--search start-->
+    <div class="search fy-search clearfix">
+        <strong class="dis-in-b f-l">智能搜索</strong>
+        <div class="search-box data-search dis-in-b f-r">
+            <div class="search-con clearfix">
+                <form id="useData" name="useData" method="get"   action="http://www.zhaoqing.gov.cn/govsearch/otherProjects/zqgov2015/ysj/index.jsp">
+                    <input name="keyword" id="keyword" type="text" class="dis-in-b f-l txt" value="请输入关键字..." onfocus="javascript:if(this.value=='请输入关键字...'){this.value='';this.style.color='#666'}" onblur="javascript:if(this.value==''){this.value='请输入关键字...';this.style.color='#ccc'}" style="color:#ccc;" />
+                    <input id="searchword" name="searchword" type="hidden" />
+                    <input id="ztfl" name="ztfl" type="hidden" />
+                    <input id="use_search" name="use_search" type="button" class="dis-in-b f-l btn" value="搜索" />
+                    <span class="more">展开</span>
+                </form>
+            </div>
+            <dl class="data-downlist clearfix">
+                <dt>数据领域：</dt>
+                <dd>
+                    <a id="dataC1"  class="dataSpan" flag="1" title="经济建设">经济建设</a>
+                    <a id="dataC2" class="dataSpan" flag="2" title="资源环境">资源环境 </a>
+                    <a id="dataC3" class="dataSpan" flag="3" title="教育科技">教育科技 </a>
+                    <a id="dataC4" class="dataSpan" flag="4" title="道路交通">道路交通</a>
+                    <a id="dataC5" class="dataSpan" flag="5" title="社会发展">社会发展</a>
+                    <a id="dataC6"  class="dataSpan" flag="6 " title="公共安全">公共安全</a>
+                    <a id="dataC7"  class="dataSpan" flag="7" title="文化休闲">文化休闲</a>
+                    <a id="dataC8" class="dataSpan" flag="8" title="卫生健康">卫生健康</a>
+                    <a id="dataC9"  class="dataSpan" flag="9" title="民生服务">民生服务</a>
+                    <a id="dataC10" class="dataSpan" flag="10" title="城市建设">城市建设</a>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <!--search end-->
+
+    <!--search end-->
+
+    <!--content start-->
+    <div class="content">
+        <div class="conbg">
+            <div class="conbox">
+                <p class="data-curmb"><a href="../../../../" title="首页" class="CurrChnlCls">首页</a>&nbsp;&gt;&nbsp;<a href="../../../" title="数据开放" class="CurrChnlCls">数据开放</a>&nbsp;&gt;&nbsp;<a href="../../" title="数据领域" class="CurrChnlCls">数据领域</a>&nbsp;&gt;&nbsp;<a href="../" title="经济建设" class="CurrChnlCls">经济建设</a>
+                    <div class="data-tab">
+                <p class="name">2016年肇庆市农村经济运行情况</p>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="150"><strong>访问/下载：</strong></td>
+                        <td>
+                            <a href="./P020170612345946120825.docx"  target="_blank" title="肇庆市2016年农村经济运行情况分析.docx"><div class="adp apd_docx pic_logo" style="height:30px;width:30px;float:left;margin-right:20px;">
+                            </div></a>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>摘要：</strong></td>
+                        <td>提供2016年肇庆市农村经济运行情况分析</td>
+                    </tr>
+                    <tr>
+                        <td><strong>关键词：</strong></td>
+                        <td>农村经济  分析</td>
+                    </tr>
+                    <tr>
+                        <td><strong>数据领域：</strong></td>
+                        <td>经济建设</td>
+                    </tr>
+                    <tr>
+                        <td><strong>国家主题分类：</strong></td>
+                        <td>农业</td>
+                    </tr>
+                    <tr>
+                        <td><strong>部门主题分类：</strong></td>
+                        <td>业务</td>
+                    </tr>
+                    <tr>
+                        <td><strong>公开属性：</strong></td>
+                        <td>普通公开</td>
+                    </tr>
+                    <tr>
+                        <td><strong>更新频度：</strong></td>
+                        <td>季</td>
+                    </tr>
+                    <tr>
+                        <td><strong>发布日期：</strong></td>
+                        <td>2017年06月12日</td>
+                    </tr>
+                    <tr>
+                        <td><strong>数据提供方单位：</strong></td>
+                        <td>肇庆市统计局</td>
+                    </tr>
+                    <tr>
+                        <td><strong>数据提供方地址：</strong></td>
+                        <td>http://tjj.zhaoqing.gov.cn/</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--content end-->
+
+</div>
+
+<!--尾部start-->
+
+<!--footer start-->
+<div class="footer">
+    <div class="col">
+
+        <div class="footbox clearfix">
+            <script id="_jiucuo_" sitecode='4412000025' src='http://pucha.kaipuyun.cn/exposure/jiucuo.js'></script>
+            <span><a href="http://bszs.conac.cn/sitename?method=show&id=0BCF47E7E128422DE053012819AC606A" target="_blank" title="党政机关"><img src="/images/2015zq_footer_pic01.png?a=1" alt="党政机关" /></a></span>
+            <span><a  title="网络警察" style=" cursor:default"><img src="/images/2015zq_footer_pic02.png?a=1" alt="网络警察" /></a></span>
+            <div class="footcon">
+                <p><a href="http://www.zhaoqing.gov.cn/dbxxl/gywm/">关于我们</a><a href="http://www.zhaoqing.gov.cn/dbxxl/lxwm/">联系我们</a><a  title="请选择出错的内容片段，然后按下“CTRL”与“ENTER”键，以便将错误及时通知我们。" onclick="alert('请选择出错的内容片段，然后按下“CTRL”与“ENTER”键，以便将错误及时通知我们。')">内容纠错</a><a href="http://www.zhaoqing.gov.cn/dbxxl/ysbh/">隐私保护</a><a href="http://www.zhaoqing.gov.cn/dbxxl/mzsm/">免责声明</a><a href="http://www.zhaoqing.gov.cn/dbxxl/flgm/">法律顾问</a><a href="http://www.zhaoqing.gov.cn/dbxxl/wzdt/">网站地图</a></p>
+                <p>主办：肇庆市人民政府&nbsp;&nbsp;承办：肇庆市信息中心</p>
+                <p><a style="color:#666;font-weight: inherit;"href="http://www.miitbeian.gov.cn" target="_blank" title="粤ICP备15000266号-1">粤ICP备15000266号-1</a> &nbsp;&nbsp; 网站标识码4412000025</p>
+            </div>
+            <span><a href="http://net.china.com.cn/index.htm" target="_blank" title="不良信息举报中心"><img src="/images/2015zq_footer_pic03.png?a=1" alt="不良信息举报中心" /></a></span>
+        </div>
+    </div>
+</div>
+<!--footer end-->
+
+<!--右侧悬浮图标start-->
+<div class="rnav" style="z-index: 9999;" id="rnav123">
+    <ul>
+        <li class="a5"><a href="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/" title="在线客服"  target="_blank"><img src="/images/2015zq_rnav_li_pic.png?a=1" alt="在线客服" /></a></li>
+        <li class="a1"><a href="http://www.zhaoqing.gov.cn/sjmtdhl/wx/201611/t20161116_414693.html" title=""></a><div ><img style="cursor:hand;" onclick="javascript:window.location.href='http://www.zhaoqing.gov.cn/sjmtdhl/wx/201611/t20161116_414693.html';" src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020151212805917255077.jpg" /><img style="cursor:hand;" onclick="javascript:window.location.href='http://www.zhaoqing.gov.cn/sjmtdhl/wx/201611/t20161116_414693.html';" src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020151215432858045285.jpg" /><img style="cursor:hand;" onclick="javascript:window.location.href='http://www.zhaoqing.gov.cn/sjmtdhl/wx/201611/t20161116_414693.html';" src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020161116415868885713.png" /></div></li>
+        <li class="a2"><a href="#" title=""></a><div><img src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020150830643248764091.jpg" /></div></li>
+        <li class="a3"><a href="#" title=""></a><div><img src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020151010528923417631.png" /></div></li>
+        <li class="a4"><a href="http://www.zhaoqing.gov.cn/sjmtdhl/ydmh/201611/t20161116_414822.html" title=""></a><div style="bottom:60px;"><img onclick="javascript:window.location.href='http://www.zhaoqing.gov.cn/sjmtdhl/ydmh/201611/t20161116_414822.html';"style="  margin-bottom: 10px;cursor:hand;" src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020151026549410544480.png" /><img onclick="javascript:window.location.href='http://www.zhaoqing.gov.cn/sjmtdhl/ydmh/201611/t20161116_414822.html';"style="  margin-bottom: 10px;cursor:hand;" src="http://www.zhaoqing.gov.cn/sjmtdhl/wzxzs/201508/W020151026549413207622.png" />
+        </div></li>
+        <li class="a6"><a href="http://www.zhaoqing.gov.cn/index/index.html" title="" class="" style="background-image: none;" target="_blank">猜你<br>喜欢</a></li>
+        <li style="width: 60px; margin-bottom: 0px;padding-top:1px; height:20px;background-image: none;"> <a onclick="hid_nav();" style="height:20px;padding-top:1px;"> <img src="http://www.zhaoqing.gov.cn//images/guanbi.png?a=1" height='20px' width='60px' /></a></li>
+        <script>
+            function hid_nav(){
+                document.getElementById("rnav123").style.display="none";
+            }
+        </script>
+    </ul>
+</div>
+<!--右侧悬浮图标end-->
+
+
+<!--[if lte IE 7]>
+<div id="underDiv" style="background-color: #333333;z-index: 6000;filter:alpha(opacity=50);-moz-opacity:0.5; opacity:0.5;
+    width: 1000px;text-align: center;position: fixed;line-height: 30px;bottom: 1px;left: 167px;height: 30px;font-size: 12px;">
+    <div style="color: white;">
+        为了获得更好的用户体验，请使用火狐、谷歌、360、遨游浏览器的极速模式或IE9及以上版本的浏览器。
+        <strong style="float:right;margin-right: 10px;cursor:pointer;" onclick="document.getElementById('underDiv').style.display='none'">×</strong>
+    </div>
+</div>
+<![endif]-->
+<!--百度分享 start-->
+<div class="share">
+    <div class="bdsharebuttonbox">
+        <a href="#" class="bds_more" data-cmd="more" title="分享到..."></a>
+    </div>
+</div>
+
+<!--网脉 开始-->
+<script id="_trs_ta_js" src="//ta.trs.cn/c/js/ta.js?mpid=165" async="async" defer="defer"></script>
+<!--网脉结束-->
+<!--尾部end-->
+<script src="../../../../images/require.js" data-main="../../../../js//2015zq_data"></script>
+<script>
+    document.getElementById("tb_13507").className="cur";
+</script>
+
+<!--[if lte IE 6]>
+<script type="text/javascript" src="../../../../images/DD_belatedPNG_0.0.8a-min.js"></script>
+<script>
+    DD_belatedPNG.fix(".logo a img,.nav,.nav li a,.data-tab td a img,.footbox span a img,.bdshare-slide-button,.rnav li.a5 a img");
+</script>
+<![endif]-->
 </body>
 </html>
