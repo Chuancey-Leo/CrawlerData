@@ -11,17 +11,18 @@ import java.util.List;
 /**
  * Created by liao on 17-11-27.
  */
-public class zhaoqing {
+public class zhanjiang {
     public static void main(String[] args) throws IOException {
         List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 3 ; i++) {
-            String requestUrl = "http://www.zhanjiang.gov.cn/govsearch/otherProjects/zqgov2015/ysj/index.jsp?ztfl=10&page="+i;
+        for (int i = 1; i <= 6 ; i++) {
+            String requestUrl = "http://data.zhanjiang.gov.cn/plus/list.php?tid=2&TotalResult=34&PageNo="+i;
             Document doc = Jsoup.connect(requestUrl).get();
 
-            Elements elements = doc.select("dl.data-list > dd > p > strong > a");
+            Elements elements = doc.select("div.dataListCon > dl > dt > h4 > a");
+            System.out.println(elements.size());
             for (int j = 0; j < elements.size(); j++) {
-                list.add(elements.get(j).attr("href"));
+                list.add("http://data.zhanjiang.gov.cn" + elements.get(j).attr("href"));
             }
         }
 
@@ -29,16 +30,18 @@ public class zhaoqing {
         for (int i = 0; i < list.size(); i++) {
             Document document = Jsoup.connect(list.get(i)).get();
 
-            result.add(document.select("div.data-tab > p").text());
+            result.add(document.select("table > caption").text());
 
-            Elements e = document.select("div.data-tab > table");
+            Elements e = document.select("table");
             Elements test = e.select("tr");
             System.out.println(test.size());
             for (int j = 0; j < test.size(); j++) {
                 Elements e1 = test.get(j).select("td");
-                String t = e1.get(1).text();
+                String t = e1.get(0).text();
                 if (t.equals("")) {
                     t = "None";
+                } else if (t.contains(",")) {
+                    t = t.replaceAll(",", ".");
                 }
                 result.set(i, result.get(i) + "," + t);
             }

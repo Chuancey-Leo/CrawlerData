@@ -68,7 +68,7 @@ public class Datadongguan {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/zhaoqing.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/zhanjiang.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(list!=null && !list.isEmpty()){

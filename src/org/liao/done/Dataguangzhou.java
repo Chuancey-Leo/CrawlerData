@@ -40,7 +40,7 @@ public class Dataguangzhou {
 
     public static void fun2() throws IOException {
         /* 读入TXT文件 */
-        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/zhaoqing.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
+        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/zhanjiang.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
         File filename = new File(pathname); // 要读取以上路径的input。txt文件
         InputStreamReader reader = new InputStreamReader(
                 new FileInputStream(filename)); // 建立一个输入流对象reader
@@ -90,7 +90,7 @@ public class Dataguangzhou {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/zhaoqing.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/zhanjiang.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(l1!=null && !l1.isEmpty()){
