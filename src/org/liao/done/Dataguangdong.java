@@ -15,7 +15,7 @@ public class Dataguangdong {
     public static void fun() throws IOException {
         List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 21; i++) {
+        for (int i = 1; i <= 42; i++) {
             String requestUrl = "http://www.gddata.gov.cn/index.php/data/ls/type/0/p/"+i+".html";
 
             Document doc= Jsoup.connect(requestUrl).get();
@@ -33,7 +33,7 @@ public class Dataguangdong {
 
     public static void fun2() throws IOException {
         /* 读入TXT文件 */
-        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/zhanjiang.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
+        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/广东.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
         File filename = new File(pathname); // 要读取以上路径的input。txt文件
         InputStreamReader reader = new InputStreamReader(
                 new FileInputStream(filename)); // 建立一个输入流对象reader
@@ -51,7 +51,7 @@ public class Dataguangdong {
         }
 
         List<String> l1 = new ArrayList<>();
-        for (int i = 0; i < 209; i++) {
+        for (int i = 0; i < 419; i++) {
             l1.add("");
         }
 
@@ -72,7 +72,7 @@ public class Dataguangdong {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/zhanjiang.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/广东.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(l1!=null && !l1.isEmpty()){
@@ -111,6 +111,8 @@ public class Dataguangdong {
         }
     }
     public static void main(String[] args) throws IOException {
+        //先运行fun(),再运行fun2()
+        //fun();
         fun2();
     }
 
