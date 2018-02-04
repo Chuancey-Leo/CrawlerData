@@ -33,7 +33,7 @@ public class Dataguangdong {
 
     public static void fun2() throws IOException {
         /* 读入TXT文件 */
-        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/广东.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
+        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/done/广东url.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
         File filename = new File(pathname); // 要读取以上路径的input。txt文件
         InputStreamReader reader = new InputStreamReader(
                 new FileInputStream(filename)); // 建立一个输入流对象reader
@@ -61,10 +61,23 @@ public class Dataguangdong {
 
             Document doc= Jsoup.connect(requestUrl).get();
 
-            Elements e1 = doc.select("p.data-title");
+            //数据名标题
+            Elements e = doc.select("p.data-title");
+            l1.set(i,e.get(0).text());
 
-            System.out.println(e1.get(0));
-            l1.set(i,e1.get(0).text());
+            //各项内容
+            Elements e1 = doc.select("table").get(0).select("td");
+            for (int j = 0; j < e1.size(); j++) {
+                if (!e1.get(j).text().equals("")) {
+                    String t = e1.get(j).text();
+                    if (t.contains(",")) {
+                        t = t.replaceAll(",",".");
+                    }
+                    l1.set(i, l1.get(i)+","+t);
+                } else if (e1.get(j).text().equals("")) {
+                    l1.set(i, l1.get(i)+",None");
+                }
+            }
         }
 
 
