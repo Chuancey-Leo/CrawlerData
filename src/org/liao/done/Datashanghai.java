@@ -15,7 +15,8 @@ public class Datashanghai {
     public static void fun() throws IOException {
         List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 97; i++) {
+        //查看总页数,先爬去取链接
+        for (int i = 1; i <= 108; i++) {
             String requestUrl = "http://www.datashanghai.gov.cn/query!queryProduct.action?currentPage="+i+"&dataField=&organId=&envaluationFraction=&dataName=&title=&dataId=&dataArrays=&deptArrays=&envaluationFractionArrays=&searchName=%E8%AF%B7%E8%BE%93%E5%85%A5%E6%95%B0%E6%8D%AE%2F%E5%BA%94%E7%94%A8%2F%E7%A7%BB%E5%8A%A8%E5%BA%94%E7%94%A8%E5%90%8D%E7%A7%B0%E5%85%B3%E9%94%AE%E8%AF%8D...&orderName=updateDate&orders=desc";
 
             Document doc= Jsoup.connect(requestUrl).get();
@@ -31,9 +32,9 @@ public class Datashanghai {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void fun2() throws Exception{
         /* 读入TXT文件 */
-        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/Datashanghai.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
+        String pathname = "/mnt/work/j2ee/CrawlerData/src/org/liao/done/上海url.txt"; // 绝对路径或相对路径都可以，这里是绝对路径，写入文件时演示相对路径
         File filename = new File(pathname); // 要读取以上路径的input。txt文件
         InputStreamReader reader = new InputStreamReader(
                 new FileInputStream(filename)); // 建立一个输入流对象reader
@@ -51,7 +52,9 @@ public class Datashanghai {
         }
 
         List<String> l1 = new ArrayList<>();
-        for (int i = 0; i < 968; i++) {
+
+        //设置list大小(链接数目)
+        for (int i = 0; i < 1074; i++) {
             l1.add("");
         }
 
@@ -91,7 +94,7 @@ public class Datashanghai {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/Datashanghai.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/上海.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(l1!=null && !l1.isEmpty()){
@@ -128,5 +131,10 @@ public class Datashanghai {
                 }
             }
         }
+    }
+    public static void main(String[] args) throws Exception {
+        //先运行fun(),再运行fun2()
+        //fun();
+        fun2();
     }
 }
