@@ -55,7 +55,7 @@ public class zhanjiang {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/zhanjiang.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/湛江.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(result!=null && !result.isEmpty()){

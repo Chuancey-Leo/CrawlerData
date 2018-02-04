@@ -1,8 +1,7 @@
-package org.liao;
+package org.liao.done;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
@@ -16,6 +15,7 @@ public class nanhai {
     public static void main(String[] args) throws IOException {
         List<String> list = new ArrayList<>();
 
+        //页数设置
         for (int i = 1; i <= 18 ; i++) {
             String requestUrl = "http://data.nanhai.gov.cn/cms/sites/sjzy/load_sj_theme.jsp?tid=all&page="+i;
             Document doc = Jsoup.connect(requestUrl).get();
@@ -67,7 +67,7 @@ public class nanhai {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/nanhai.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/nanhai.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(result!=null && !result.isEmpty()){
