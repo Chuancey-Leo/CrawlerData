@@ -15,12 +15,12 @@ public class Datadongguan {
     public static void main(String[] args) {
         List<String> list = new ArrayList<>();
 
-        for (int i = 0; i < 768; i++) {
+        for (int i = 0; i < 753; i++) {
             list.add("");
         }
         StringBuilder result = new StringBuilder();
         try{
-            BufferedReader br = new BufferedReader(new FileReader(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/test.txt")));//构造一个BufferedReader类来读取文件
+            BufferedReader br = new BufferedReader(new FileReader(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/东莞源码.txt")));//构造一个BufferedReader类来读取文件
             String s = null;
             while((s = br.readLine())!=null){//使用readLine方法，一次读一行
                 result.append(System.lineSeparator()+s);
@@ -68,7 +68,7 @@ public class Datadongguan {
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
         try {
-            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/湛江.csv"));
+            out = new FileOutputStream(new File("/mnt/work/j2ee/CrawlerData/src/org/liao/done/东莞.csv"));
             osw = new OutputStreamWriter(out);
             bw =new BufferedWriter(osw);
             if(list!=null && !list.isEmpty()){
